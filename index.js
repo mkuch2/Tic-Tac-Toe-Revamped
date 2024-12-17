@@ -13,6 +13,14 @@ const Gameboard = (function(){
   }
 }
 
+const getRows = ()=>{
+  return ROWS;
+}
+
+const getCols = ()=>{
+  return COLS;
+}
+
 //display board
   const displayBoard = ()=>{
     for(let i = 0; i < ROWS; i++){
@@ -64,7 +72,7 @@ const Gameboard = (function(){
     }
 
 
-  return {setGameboard, displayBoard, getTile, addMarker, checkBoard};
+  return {setGameboard, displayBoard, getTile, addMarker, checkBoard, getRows, getCols};
 })();
 
 function Player(name, marker){
@@ -111,13 +119,16 @@ function Game(){
     console.log("Board has been reset.");
   }
 
+  const getActivePlayer = () => {
+    return activePlayer;
+  }
 
 
   const playRound = (row, col)=>{
     //check if player added tile to a valid spot
     while(!activePlayer.setMarker(row, col)){
       console.log("Invalid spot! Try again!");
-      return;
+      return -1;
     }
     turns++;
 
@@ -127,24 +138,90 @@ function Game(){
       Gameboard.displayBoard();
       console.log(`${activePlayer.getName()} wins!`);
       resetGame();
-      return;
+      return 0;
     }
     else if(turns >= 9 && !Gameboard.checkBoard()){
       Gameboard.displayBoard();
       console.log("It's a tie!");
       resetGame();
-      return;
+      return 1;
     }
     else{
       switchActivePlayer();
-      console.log(turns, "turns without win or tie");
     }
 
     printNewRound();
+    return 2;
   }
 
   printNewRound();
 
-  return {playRound};
+  return {playRound, getActivePlayer, resetGame};
 
 }
+
+
+//TODO: figure out whether I should have these functions in Game or have Game functions in here...
+const GameUI = (function(){
+  const container = document.querySelector("#container");
+  const newGameBtn = document.querySelector("#new-game-btn");
+  const game = Game();
+
+  newGameBtn.addEventListener("click", ()=>{
+    newGame();
+  });
+
+  //place player's marker on selected title
+  const placeMarker = (tile, game, i, j) =>{
+    let activePlayer = game.getActivePlayer();
+    console.log('test');
+    switch(game.playRound(i,j)){
+      case 0:
+        tile.textContent += activePlayer.getMarker();
+        alert(`${activePlayer.getName()} wins!`);
+        container.classList.toggle('finished', true)
+        break;
+      case 1:
+        tile.textContent += activePlayer.getMarker();
+        alert("It's a tie!");
+        container.classList.toggle('finished', true);
+        break;
+      case 2:
+        tile.textContent += activePlayer.getMarker();
+        break;
+      default:
+        alert("Invalid spot! Try again.");
+    }
+  }
+
+  const displayGrid = ()=>{
+    for(let i = 0; i < Gameboard.getRows(); i++){
+      for(let j = 0; j<Gameboard.getCols(); j++){
+        const tile = document.createElement("div");
+        tile.classList.add("tile");
+
+        tile.addEventListener("click", ()=>{
+          placeMarker(tile, game, i, j);
+        });
+
+        container.appendChild(tile);
+      }
+  }
+}
+
+//TODO: let player know game has been reset somehow..
+  const newGame = ()=>{
+    game.resetGame();
+    container.classList.remove('finished');
+    while(container.firstChild){
+      container.removeChild(container.lastChild);
+    }
+    displayGrid();
+  }
+
+  
+
+  return {displayGrid};
+})();
+
+GameUI.displayGrid();
