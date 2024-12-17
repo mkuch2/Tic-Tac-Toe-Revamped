@@ -13,16 +13,20 @@ const Gameboard = (function(){
   }
 }
 
+//display board
   const displayBoard = ()=>{
     for(let i = 0; i < ROWS; i++){
       console.log(gameboard[i]);
     }
   }
 
+
+  //return value at tile
   const getTile = (row, col)=>{
     return gameboard[row][col];
   }
 
+  //add player marker to tile if not tile already taken
   const addMarker = (marker, row, col) =>{
     if(gameboard[row][col] === null){
       gameboard[row][col] = marker;
@@ -31,6 +35,7 @@ const Gameboard = (function(){
     return false;
   }
 
+  //check board for winning conditions, return true if found and false otherwise
   const checkBoard = () => {
       // Check rows
       for (let i = 0; i < 3; i++) {
@@ -71,6 +76,7 @@ function Player(name, marker){
     return marker;
   }
 
+  //place marker on selected tile
   const setMarker = (row, col) => {
     return Gameboard.addMarker(marker, row, col);
   };
@@ -108,6 +114,7 @@ function Game(){
 
 
   const playRound = (row, col)=>{
+    //check if player added tile to a valid spot
     while(!activePlayer.setMarker(row, col)){
       console.log("Invalid spot! Try again!");
       return;
@@ -115,6 +122,7 @@ function Game(){
     turns++;
 
 
+    //check for win or tie, continue game otherwise
     if(turns >= 5 && turns <= 9 && Gameboard.checkBoard()){
       Gameboard.displayBoard();
       console.log(`${activePlayer.getName()} wins!`);
