@@ -103,8 +103,8 @@ function Game(playerOneName="Player One", playerTwoName="Player Two"){
   if(playerTwoName === ''){
     playerTwoName = 'Player Two';
   }
-  const playerOne = Player(playerOneName, "x");
-  const playerTwo = Player(playerTwoName, "o");
+  const playerOne = Player(playerOneName, "X");
+  const playerTwo = Player(playerTwoName, "O");
   let activePlayer = playerOne;
 
   players.push(playerOne, playerTwo);
@@ -242,6 +242,7 @@ const GameUI = (function(){
   //create new game with given player names
   const newGame = (playerOneName, playerTwoName)=>{
     game = Game(playerOneName, playerTwoName);
+    newGameBtn.classList.remove("center");
 
 
     container.classList.remove('finished');
