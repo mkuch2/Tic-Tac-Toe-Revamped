@@ -1,12 +1,57 @@
+*{
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif
+}
+html,body{
+  height: 100vh;
+  display: relative;
+  background-color: #F8EDEB;
+}
+
+#heading{
+  text-align:center;
+  color: #FEC5BB;
+
+}
+
 #container{
   display: grid;
-  grid-template: repeat(3, 300px) / repeat(3, 300px);
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  height: 50vh;
+  width: 50vw;
+  margin: auto;
+
 }
 #container.finished{
   pointer-events: none;
+  background-color: rgba(220,220,220, 0.5);
 }
 
 #container *{
   width: 100%;
-  border: 1px solid black;
+  border: 5px solid burlywood;
+}
+
+dialog{
+  position: absolute;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  width: 50vw;
+  height: 25vh;
+}
+
+form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+form input{
+  width: 50%;
+
 }

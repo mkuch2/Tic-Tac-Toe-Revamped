@@ -8,9 +8,21 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Tic-Tac-Toe</h1>
+  <h1 id="heading">Select 'New Game' to start a new game of Tic-Tac-Toe!</h1>
   <div id="container"></div>
 
+  <dialog>
+    <form>
+      <label for="name-player-one">Player One Name:</label>
+      <input type="text" id="name-player-one">
+      <label for="name-player-two">Player Two Name:</label>
+      <input type="text" id="name-player-two">
+      <div>
+        <button formmethod="dialog" value="Cancel">Cancel</button>
+        <button id="dialog--confirm-btn" value="Confirm">Confirm</button>
+      </div>
+    </form>
+  </dialog>
   <button id="new-game-btn">New Game</button>
   
 </body>

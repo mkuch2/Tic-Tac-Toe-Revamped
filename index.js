@@ -92,13 +92,19 @@ function Player(name, marker){
   return {getName, getMarker, setMarker};
 }
 
-function Game(){
+function Game(playerOneName="Player One", playerTwoName="Player Two"){
   const players = [];
   let turns = 0;
   Gameboard.setGameboard();
 
-  const playerOne = Player("Player One", "x");
-  const playerTwo = Player("Player Two", "o");
+  if(playerOneName === ''){
+    playerOneName = 'Player One';
+  }  
+  if(playerTwoName === ''){
+    playerTwoName = 'Player Two';
+  }
+  const playerOne = Player(playerOneName, "x");
+  const playerTwo = Player(playerTwoName, "o");
   let activePlayer = playerOne;
 
   players.push(playerOne, playerTwo);
@@ -163,22 +169,44 @@ function Game(){
 
 //TODO: figure out whether I should have these functions in Game or have Game functions in here...
 const GameUI = (function(){
+  let game;
   const container = document.querySelector("#container");
   const newGameBtn = document.querySelector("#new-game-btn");
-  const game = Game();
+  const header = document.querySelector("#heading");
+  const dialog = document.querySelector("dialog");
+  const dialogPlayerOne = document.querySelector("#name-player-one");
+  const dialogPlayerTwo = document.querySelector("#name-player-two");
+  const dialogConfirmBtn = document.querySelector("#dialog--confirm-btn");
 
   newGameBtn.addEventListener("click", ()=>{
-    newGame();
+    dialog.showModal();
+    handleDialog();
   });
+
+  const handleDialog = ()=>{
+
+    dialogConfirmBtn.addEventListener("click", (e)=>{
+      e.preventDefault();
+      dialog.close('Confirm');
+    })
+
+    dialog.addEventListener("close", ()=>{
+      console.log(dialog.returnValue);
+      if(dialog.returnValue === 'Confirm'){
+        newGame(dialogPlayerOne.value, dialogPlayerTwo.value);
+        header.textContent = `${game.getActivePlayer().getName()}'s turn`;
+      }
+    });
+  }
+
 
   //place player's marker on selected title
   const placeMarker = (tile, game, i, j) =>{
     let activePlayer = game.getActivePlayer();
-    console.log('test');
     switch(game.playRound(i,j)){
       case 0:
         tile.textContent += activePlayer.getMarker();
-        alert(`${activePlayer.getName()} wins!`);
+        header.textContent = `${activePlayer.getName()} wins!`;
         container.classList.toggle('finished', true)
         break;
       case 1:
@@ -188,12 +216,14 @@ const GameUI = (function(){
         break;
       case 2:
         tile.textContent += activePlayer.getMarker();
+        header.textContent = `${game.getActivePlayer().getName()}'s turn!`;
         break;
       default:
         alert("Invalid spot! Try again.");
     }
   }
 
+  //display grid and add click event listeners to each tile
   const displayGrid = ()=>{
     for(let i = 0; i < Gameboard.getRows(); i++){
       for(let j = 0; j<Gameboard.getCols(); j++){
@@ -209,9 +239,11 @@ const GameUI = (function(){
   }
 }
 
-//TODO: let player know game has been reset somehow..
-  const newGame = ()=>{
-    game.resetGame();
+  //create new game with given player names
+  const newGame = (playerOneName, playerTwoName)=>{
+    game = Game(playerOneName, playerTwoName);
+
+
     container.classList.remove('finished');
     while(container.firstChild){
       container.removeChild(container.lastChild);
@@ -224,4 +256,3 @@ const GameUI = (function(){
   return {displayGrid};
 })();
 
-GameUI.displayGrid();
